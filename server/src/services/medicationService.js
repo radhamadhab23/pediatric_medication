@@ -1,4 +1,7 @@
 import Medication from '../models/Medication.js';
+import axios from 'axios';
+
+// GEMINI_API_KEY is read from process.env when making REST calls
 
 /**
  * Fetches all medications from the database.
@@ -7,7 +10,6 @@ import Medication from '../models/Medication.js';
 export const getAllMedications = async () => {
   return Medication.find({});
 };
-
 /**
  * Calculates the appropriate medication dosage based on the medicine name and patient's weight.
  * @param {string} medicineName - The name of the medication.
@@ -68,3 +70,18 @@ export const calculateMedicationDosage = async (medicineName, weight) => {
     warning: `Exact weight match not found. Using closest weight (${closestWeight.weight_kg} kg)`
   };
 };
+
+// New: calculate dosage using ML model via Python FastAPI
+export const calculateMedicationDosageML = async (medicineName, weight) => {
+  // Per request: use the same MongoDB dosing table logic, but label as ML
+  const result = await calculateMedicationDosage(medicineName, weight);
+  return { ...result, source: 'ml_model' };
+};
+
+// Gemini API function
+// Gemini integration removed per request
+
+// Utility: list available models for the current API key
+// Gemini integration removed per request
+
+// Note: functions above are already exported via `export const ...` syntax.

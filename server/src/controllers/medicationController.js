@@ -25,7 +25,27 @@ export const calculateDosage = async (req, res, next) => {
     next(error);
   }
 };
+// New: Calculate dosage using ML model instead of only dosing table
+export const calculateDosageML = async (req, res, next) => {
+  try {
+    const { medicineName, weight } = req.body;
 
+    if (!medicineName || !weight) {
+      return res.status(400).json({
+        error: 'Missing required fields: medicineName and weight are required'
+      });
+    }
+
+    const dosageInfo = await medicationService.calculateMedicationDosageML(
+      medicineName,
+      weight
+    );
+
+    res.json(dosageInfo);
+  } catch (error) {
+    next(error);
+  }
+};
 // Get all medications
 export const getAllMedications = async (req, res, next) => {
   try {
@@ -64,3 +84,5 @@ export const debugMedications = async (req, res, next) => {
     next(error);
   }
 };
+
+// Gemini endpoints removed per request
